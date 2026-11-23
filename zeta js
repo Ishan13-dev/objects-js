@@ -1,0 +1,177 @@
+/**
+ * Museum Artifact Collection Manager
+ * Demonstrates managing deeply nested JavaScript data structures (objects containing
+ * nested objects and arrays of objects), safe property lookups, deduplicated array 
+ * updates, boolean toggling, and multi-line template literal formatting.
+ */
+
+// ==========================================
+// 1. Initial Museum Collection Data
+// ==========================================
+
+// Nested object keyed by unique artifact IDs (101, 102).
+// Each artifact contains primitive values, a nested `curator` object,
+// an array of `locations` objects, and a `tags` string array.
+const collection = {
+  101: {
+    title: "Golden Mask",
+    category: "Ceremonial",
+    curator: {
+      id: 201,
+      name: "Earl Sinclair",
+    },
+    locations: [
+      { gallery: "Hall A", year: 2020 },
+      { gallery: "Hall C", year: 2024 },
+    ],
+    tags: ["gold", "egypt"],
+    onDisplay: true,
+  },
+  102: {
+    title: "Bronze Tablet",
+    category: "Inscription",
+    curator: {
+      id: 202,
+      name: "Robert Sinclair",
+    },
+    locations: [{ gallery: "Archive Wing", year: 2019 }],
+    tags: ["bronze", "writing"],
+    onDisplay: false,
+  },
+};
+
+// Direct chained access examples
+console.log(collection[101].title);        // Expected Output: "Golden Mask"
+console.log(collection[101].curator.name); // Expected Output: "Earl Sinclair"
+
+// ==========================================
+// 2. Lookup & Mutation Helper Functions
+// ==========================================
+
+/**
+ * Safely retrieves the title of an artifact by its ID.
+ * Uses a ternary operator to return a fallback string if the ID does not exist.
+ *
+ * @param {number|string} id - The unique artifact ID.
+ * @returns {string} The artifact title, or "Artifact not found".
+ */
+function getArtifactTitle(id) {
+  const artifact = collection[id];
+  return artifact ? artifact.title : "Artifact not found";
+}
+
+console.log(getArtifactTitle(102)); // Expected Output: "Bronze Tablet"
+
+/**
+ * Adds a new tag to an artifact's `tags` array if the artifact exists 
+ * and the tag is not already present (prevents duplicate tags).
+ *
+ * @param {number|string} id - The unique artifact ID.
+ * @param {string} tag - The tag to append.
+ */
+function addTag(id, tag) {
+  const artifact = collection[id];
+  // Short-circuit evaluation: only checks `.includes()` if `artifact` is truthy
+  if (artifact && !artifact.tags.includes(tag)) {
+    artifact.tags.push(tag);
+  }
+}
+
+addTag(101, "royal");
+console.log(collection[101].tags); 
+// Expected Output: [ 'gold', 'egypt', 'royal' ]
+
+/**
+ * Records a gallery move by appending a new location object to the end
+ * of the artifact's `locations` history array.
+ *
+ * HARD STEP EXPLANATION (Object Property Shorthand):
+ * `{ gallery, year }` is ES6 shorthand for `{ gallery: gallery, year: year }`.
+ * Because the variable names match the desired object keys, JavaScript maps them automatically.
+ *
+ * @param {number|string} id - The unique artifact ID.
+ * @param {string} gallery - The name of the new gallery.
+ * @param {number} year - The year the move occurred.
+ */
+function moveArtifact(id, gallery, year) {
+  const artifact = collection[id];
+  if (artifact) {
+    artifact.locations.push({ gallery, year });
+  }
+}
+
+moveArtifact(102, "Hall B", 2026);
+console.log(collection[102].locations); 
+// Expected Output: [ { gallery: 'Archive Wing', year: 2019 }, { gallery: 'Hall B', year: 2026 } ]
+
+/**
+ * Flips the boolean `onDisplay` status of an artifact (`true` <-> `false`).
+ *
+ * @param {number|string} id - The unique artifact ID.
+ */
+function toggleDisplayStatus(id) {
+  const artifact = collection[id];
+  if (artifact) {
+    artifact.onDisplay = !artifact.onDisplay;
+  }
+}
+
+console.log(collection[102].onDisplay); // Expected Output: false
+toggleDisplayStatus(102);
+console.log(collection[102].onDisplay); // Expected Output: true
+
+/**
+ * Updates the `name` property inside an artifact's nested `curator` object.
+ *
+ * @param {number|string} id - The unique artifact ID.
+ * @param {string} name - The new curator's name.
+ */
+function updateCurator(id, name) {
+  const artifact = collection[id];
+  if (artifact) {
+    artifact.curator.name = name;
+  }
+}
+
+updateCurator(101, "Fran Sinclair");
+console.log(collection[101].curator.name); // Expected Output: "Fran Sinclair"
+
+// ==========================================
+// 3. Report Formatting Function
+// ==========================================
+
+/**
+ * Builds a formatted multi-line text summary of an artifact's current state.
+ *
+ * HARD STEP EXPLANATION:
+ * 1. `artifact.locations[artifact.locations.length - 1]` retrieves the most recent
+ *    entry in the `locations` array (the last element).
+ * 2. Multi-line template literals preserve every newline and space inside the backticks,
+ *    so subsequent lines are kept flush left to avoid accidental leading indentation.
+ *
+ * @param {number|string} id - The unique artifact ID.
+ * @returns {string} A formatted multi-line summary, or "Artifact not found".
+ */
+function buildSummary(id) {
+  const artifact = collection[id];
+  if (!artifact) {
+    return "Artifact not found";
+  }
+
+  const currentLocation = artifact.locations[artifact.locations.length - 1];
+
+  return `${artifact.title}
+Category: ${artifact.category}
+Curator: ${artifact.curator.name}
+Current Gallery: ${currentLocation.gallery}
+On Display: ${artifact.onDisplay}`;
+}
+
+console.log(buildSummary(101));
+/* Expected Output:
+Golden Mask
+Category: Ceremonial
+Curator: Fran Sinclair
+Current Gallery: Hall C
+On Display: true
+*/
