@@ -65,3 +65,16 @@ Manages deeply nested objects containing sub-objects (`curator`), historical arr
 Run any script using Node.js:
   ``` bash
   node <filename>.js
+## 👨‍💻 Author
+
+**Ishan Verma**
+
+GitHub: [@Ishan13-dev](https://github.com/Ishan13-dev)
+
+## ⭐ Support
+
+If you find this repository helpful, consider giving it a star ⭐.
+
+---
+
+**Keep Learning, Keep Practicing, Keep Coding! 💻🚀**
