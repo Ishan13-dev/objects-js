@@ -61,14 +61,18 @@ Manages deeply nested objects containing sub-objects (`curator`), historical arr
    ```bash
    git clone [https://github.com/Ishan13-dev/objects-js.git](https://github.com/Ishan13-dev/objects-js.git)
    cd objects-js
+   ```
 
-Run any script using Node.js:
-  ``` bash
-  node <filename>.js
+2. **Run any script using Node.js:**
+   ```bash
+   node <filename>.js
+   ```
+
+---
+
 ## 👨‍💻 Author
 
-**Ishan Verma**
-
+**Ishan Verma**  
 GitHub: [@Ishan13-dev](https://github.com/Ishan13-dev)
 
 ## ⭐ Support
